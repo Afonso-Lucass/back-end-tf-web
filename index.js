@@ -2,19 +2,22 @@ import pkg from "pg";
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
-import cors from "cors"; // ADICIONE ESTA LINHA
+import cors from "cors"; 
 
 const app = express();
 const port = process.env.PORT || 3008;
 const { Pool } = pkg;
 let pool = null;
 
-// ADICIONE ESTAS LINHAS
+
 app.use(cors({
-  origin: '*', // Permite todas as origens (ou especifique seu domínio do frontend)
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type']
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+app.options('*', cors());
+
 
 app.use(express.json());
 
@@ -506,6 +509,4 @@ app.delete("/banner/:id", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Serviço rodando na porta: ${port}`);
-});
+export default app;
