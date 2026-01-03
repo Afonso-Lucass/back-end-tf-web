@@ -2,10 +2,19 @@ import pkg from "pg";
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
+import cors from "cors"; // ADICIONE ESTA LINHA
+
 const app = express();
 const port = process.env.PORT || 3008;
 const { Pool } = pkg;
 let pool = null;
+
+// ADICIONE ESTAS LINHAS
+app.use(cors({
+  origin: '*', // Permite todas as origens (ou especifique seu domínio do frontend)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+}));
 
 app.use(express.json());
 
