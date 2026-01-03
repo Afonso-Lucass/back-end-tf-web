@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import cors from "cors"; 
+import multer from 'multer';
 
 const app = express();
 const port = process.env.PORT || 3008;
@@ -20,6 +21,30 @@ app.options('*', cors());
 
 
 app.use(express.json());
+
+import fs from 'fs';
+
+if (!fs.existsSync('uploads/banner')) {
+  fs.mkdirSync('uploads/banner', { recursive: true });
+}
+
+const upload = multer({
+  limits: { fileSize: 2 * 1024 * 1024 } // 2MB
+});
+
+
+
+app.post('/upload/banner', upload.single('imagem'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ erro: 'Nenhuma imagem enviada' });
+  }
+
+  res.json({
+    buffer: req.file.buffer.toString('base64')
+  });
+});
+
+
 
 // Função para obter uma conexão com o banco de dados
 function conectarBD() {
