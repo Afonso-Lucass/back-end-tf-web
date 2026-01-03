@@ -60,7 +60,7 @@ app.get("/produto", async (req, res) => {
   
   try {
     const db = conectarBD();
-    const resultado = await db.query("SELECT * FROM Produto ORDER BY id_produto ASC");
+    const resultado = await db.query("SELECT * FROM produto ORDER BY id_produto ASC");
     res.json(resultado.rows);
   } catch (e) {
     console.error("Erro ao buscar produtos:", e);
@@ -78,7 +78,7 @@ app.get("/produto/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const db = conectarBD();
-    const consulta = "SELECT * FROM Produto WHERE id_produto = $1";
+    const consulta = "SELECT * FROM produto WHERE id_produto = $1";
     const resultado = await db.query(consulta, [id]);
     
     if (resultado.rows.length === 0) {
@@ -112,7 +112,7 @@ app.post("/produto", async (req, res) => {
     const db = conectarBD();
     
     const consulta = `
-      INSERT INTO Produto (nome, categoria, descricao, preco, imagem, cores, id_admin) 
+      INSERT INTO produto (nome, categoria, descricao, preco, imagem, cores, id_admin) 
       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *
     `;
     const produto = [
@@ -146,7 +146,7 @@ app.put("/produto/:id", async (req, res) => {
     const id = req.params.id;
     const db = conectarBD();
     
-    let consulta = "SELECT * FROM Produto WHERE id_produto = $1";
+    let consulta = "SELECT * FROM produto WHERE id_produto = $1";
     let resultado = await db.query(consulta, [id]);
     let produto = resultado.rows;
     
@@ -166,7 +166,7 @@ app.put("/produto/:id", async (req, res) => {
     data.id_admin = data.id_admin || produto[0].id_admin;
     
     consulta = `
-      UPDATE Produto 
+      UPDATE produto 
       SET nome = $1, categoria = $2, descricao = $3, preco = $4, 
           imagem = $5, cores = $6, id_admin = $7 
       WHERE id_produto = $8 RETURNING *
@@ -196,14 +196,14 @@ app.delete("/produto/:id", async (req, res) => {
     const id = req.params.id;
     const db = conectarBD();
     
-    let consulta = "SELECT * FROM Produto WHERE id_produto = $1";
+    let consulta = "SELECT * FROM produto WHERE id_produto = $1";
     let resultado = await db.query(consulta, [id]);
     
     if (resultado.rows.length === 0) {
       return res.status(404).json({ mensagem: "Produto não encontrado" });
     }
     
-    consulta = "DELETE FROM Produto WHERE id_produto = $1";
+    consulta = "DELETE FROM produto WHERE id_produto = $1";
     await db.query(consulta, [id]);
     
     res.status(200).json({ mensagem: "Produto excluído com sucesso!" });
@@ -223,7 +223,7 @@ app.get("/administrador", async (req, res) => {
   
   try {
     const db = conectarBD();
-    const resultado = await db.query("SELECT id_admin, usuario FROM Administrador ORDER BY id_admin ASC");
+    const resultado = await db.query("SELECT id_admin, usuario FROM administrador ORDER BY id_admin ASC");
     res.json(resultado.rows);
   } catch (e) {
     console.error("Erro ao buscar administradores:", e);
@@ -241,7 +241,7 @@ app.get("/administrador/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const db = conectarBD();
-    const consulta = "SELECT id_admin, usuario FROM Administrador WHERE id_admin = $1";
+    const consulta = "SELECT id_admin, usuario FROM administrador WHERE id_admin = $1";
     const resultado = await db.query(consulta, [id]);
     
     if (resultado.rows.length === 0) {
@@ -275,12 +275,12 @@ app.post("/administrador", async (req, res) => {
     const db = conectarBD();
     
     // Verifica se usuário já existe
-    const verificaUsuario = await db.query("SELECT * FROM Administrador WHERE usuario = $1", [data.usuario]);
+    const verificaUsuario = await db.query("SELECT * FROM administrador WHERE usuario = $1", [data.usuario]);
     if (verificaUsuario.rows.length > 0) {
       return res.status(400).json({ erro: "Usuário já cadastrado" });
     }
     
-    const consulta = "INSERT INTO Administrador (usuario, senha) VALUES ($1, $2) RETURNING id_admin, usuario";
+    const consulta = "INSERT INTO administrador (usuario, senha) VALUES ($1, $2) RETURNING id_admin, usuario";
     const administrador = [data.usuario, data.senha];
     const resultado = await db.query(consulta, administrador);
     
@@ -304,7 +304,7 @@ app.put("/administrador/:id", async (req, res) => {
     const id = req.params.id;
     const db = conectarBD();
     
-    let consulta = "SELECT * FROM Administrador WHERE id_admin = $1";
+    let consulta = "SELECT * FROM administrador WHERE id_admin = $1";
     let resultado = await db.query(consulta, [id]);
     let administrador = resultado.rows;
     
@@ -329,7 +329,7 @@ app.put("/administrador/:id", async (req, res) => {
     data.usuario = data.usuario || administrador[0].usuario;
     data.senha = data.senha || administrador[0].senha;
     
-    consulta = "UPDATE Administrador SET usuario = $1, senha = $2 WHERE id_admin = $3 RETURNING id_admin, usuario";
+    consulta = "UPDATE administrador SET usuario = $1, senha = $2 WHERE id_admin = $3 RETURNING id_admin, usuario";
     resultado = await db.query(consulta, [data.usuario, data.senha, id]);
     
     res.status(200).json({
@@ -352,14 +352,14 @@ app.delete("/administrador/:id", async (req, res) => {
     const id = req.params.id;
     const db = conectarBD();
     
-    let consulta = "SELECT * FROM Administrador WHERE id_admin = $1";
+    let consulta = "SELECT * FROM administrador WHERE id_admin = $1";
     let resultado = await db.query(consulta, [id]);
     
     if (resultado.rows.length === 0) {
       return res.status(404).json({ mensagem: "Administrador não encontrado" });
     }
     
-    consulta = "DELETE FROM Administrador WHERE id_admin = $1";
+    consulta = "DELETE FROM administrador WHERE id_admin = $1";
     await db.query(consulta, [id]);
     
     res.status(200).json({ mensagem: "Administrador excluído com sucesso!" });
@@ -379,7 +379,7 @@ app.get("/banner", async (req, res) => {
   
   try {
     const db = conectarBD();
-    const resultado = await db.query("SELECT * FROM BannerRotativo ORDER BY id_banner ASC");
+    const resultado = await db.query("SELECT * FROM bannerrotativo ORDER BY id_banner ASC");
     res.json(resultado.rows);
   } catch (e) {
     console.error("Erro ao buscar banners:", e);
@@ -397,7 +397,7 @@ app.get("/banner/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const db = conectarBD();
-    const consulta = "SELECT * FROM BannerRotativo WHERE id_banner = $1";
+    const consulta = "SELECT * FROM bannerrotativo WHERE id_banner = $1";
     const resultado = await db.query(consulta, [id]);
     
     if (resultado.rows.length === 0) {
@@ -430,7 +430,7 @@ app.post("/banner", async (req, res) => {
     
     const db = conectarBD();
     
-    const consulta = "INSERT INTO BannerRotativo (id_banner, imagens, id_admin) VALUES ($1, $2, $3) RETURNING *";
+    const consulta = "INSERT INTO bannerrotativo (id_banner, imagens, id_admin) VALUES ($1, $2, $3) RETURNING *";
     const banner = [data.id_banner, data.imagens, data.id_admin];
     const resultado = await db.query(consulta, banner);
     
@@ -454,7 +454,7 @@ app.put("/banner/:id", async (req, res) => {
     const id = req.params.id;
     const db = conectarBD();
     
-    let consulta = "SELECT * FROM BannerRotativo WHERE id_banner = $1";
+    let consulta = "SELECT * FROM bannerrotativo WHERE id_banner = $1";
     let resultado = await db.query(consulta, [id]);
     let banner = resultado.rows;
     
@@ -468,7 +468,7 @@ app.put("/banner/:id", async (req, res) => {
     data.imagens = data.imagens || banner[0].imagens;
     data.id_admin = data.id_admin || banner[0].id_admin;
     
-    consulta = "UPDATE BannerRotativo SET imagens = $1, id_admin = $2 WHERE id_banner = $3 RETURNING *";
+    consulta = "UPDATE bannerrotativo SET imagens = $1, id_admin = $2 WHERE id_banner = $3 RETURNING *";
     resultado = await db.query(consulta, [data.imagens, data.id_admin, id]);
     
     res.status(200).json({
@@ -491,14 +491,14 @@ app.delete("/banner/:id", async (req, res) => {
     const id = req.params.id;
     const db = conectarBD();
     
-    let consulta = "SELECT * FROM BannerRotativo WHERE id_banner = $1";
+    let consulta = "SELECT * FROM bannerrotativo WHERE id_banner = $1";
     let resultado = await db.query(consulta, [id]);
     
     if (resultado.rows.length === 0) {
       return res.status(404).json({ mensagem: "Banner não encontrado" });
     }
     
-    consulta = "DELETE FROM BannerRotativo WHERE id_banner = $1";
+    consulta = "DELETE FROM bannerrotativo WHERE id_banner = $1";
     await db.query(consulta, [id]);
     
     res.status(200).json({ mensagem: "Banner excluído com sucesso!" });
